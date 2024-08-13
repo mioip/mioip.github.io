@@ -82,7 +82,7 @@ async function getIPInfo() {
 
             // Check if IPv6 is the same as IPv4 and handle it
             if (ipv6 === ipv4) {
-                document.getElementById('ipv6').textContent = 'IPv6: Not available or same as IPv4';
+                document.getElementById('ipv6').textContent = 'IPv6: Not available';
             } else {
                 document.getElementById('ipv6').textContent = `IPv6: ${ipv6}`;
             }
