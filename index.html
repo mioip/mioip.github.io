@@ -63,32 +63,41 @@
         <button onclick="copyIP('ipv6')">Copy IPv6</button>
     </div>
     <script>
-        async function getIPInfo() {
-            try {
-                // Fetch IPv4 and country info
-                const ipv4Response = await fetch('https://ipapi.co/json/');
-                const ipv4Data = await ipv4Response.json();
-                document.getElementById('ipv4').textContent = `IPv4: ${ipv4Data.ip}`;
-                document.getElementById('country').textContent = ipv4Data.country_name;
-                displayFlag(ipv4Data.country_code);
+async function getIPInfo() {
+    try {
+        // Fetch IPv4 and country info
+        const ipv4Response = await fetch('https://ipapi.co/json/');
+        const ipv4Data = await ipv4Response.json();
+        const ipv4 = ipv4Data.ip;
 
-                // Try to fetch IPv6 info if IPv4 fetching was successful
-                try {
-                    const ipv6Response = await fetch('https://api64.ipify.org?format=json');
-                    const ipv6Data = await ipv6Response.json();
-                    document.getElementById('ipv6').textContent = `IPv6: ${ipv6Data.ip}`;
-                } catch (ipv6Error) {
-                    console.error('Error fetching IPv6:', ipv6Error);
-                    document.getElementById('ipv6').textContent = 'IPv6: Not available';
-                }
-            } catch (error) {
-                console.error('Error fetching IP info:', error);
-                document.getElementById('ipv4').textContent = 'Error fetching IP information';
-                document.getElementById('ipv6').textContent = '';
-                document.getElementById('country').textContent = '';
-                document.getElementById('flag').innerHTML = '';
+        document.getElementById('ipv4').textContent = `IPv4: ${ipv4}`;
+        document.getElementById('country').textContent = ipv4Data.country_name;
+        displayFlag(ipv4Data.country_code);
+
+        // Try to fetch IPv6 info
+        try {
+            const ipv6Response = await fetch('https://api64.ipify.org?format=json');
+            const ipv6Data = await ipv6Response.json();
+            const ipv6 = ipv6Data.ip;
+
+            // Check if IPv6 is the same as IPv4 and handle it
+            if (ipv6 === ipv4) {
+                document.getElementById('ipv6').textContent = 'IPv6: Not available or same as IPv4';
+            } else {
+                document.getElementById('ipv6').textContent = `IPv6: ${ipv6}`;
             }
+        } catch (ipv6Error) {
+            console.error('Error fetching IPv6:', ipv6Error);
+            document.getElementById('ipv6').textContent = 'IPv6: Not available';
         }
+    } catch (error) {
+        console.error('Error fetching IP info:', error);
+        document.getElementById('ipv4').textContent = 'Error fetching IP information';
+        document.getElementById('ipv6').textContent = '';
+        document.getElementById('country').textContent = '';
+        document.getElementById('flag').innerHTML = '';
+    }
+}
 
         function displayFlag(countryCode) {
             const flagElement = document.getElementById('flag');
